@@ -1,0 +1,11 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║         ⚙️ business-service.yml (Distributed Config)            ║
+# ║                                                                  ║
+# ║  [파일 역할]                                                     ║
+# ║  1. Config Server에 의해 배포되는 business-service 전용 설정      ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+info:
+  app:
+    name: "Infra Master Lab - Business Service"
+    description: "헥사고날 아키텍처로 구현된 인프라 마스터 랩의 핵심 서비스입니다."

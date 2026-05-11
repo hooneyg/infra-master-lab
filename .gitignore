@@ -1,0 +1,34 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║         🚫 .gitignore (Infra Master Lab Policy)                 ║
+# ║                                                                  ║
+# ║  [제외 원칙]                                                     ║
+# ║  1. 빌드 및 캐시: /build, /.gradle (컴파일 산출물)                ║
+# ║  2. 인프라 임시 파일: *.retry, *.pyc (Ansible/Python 관련)        ║
+# ║  3. 민감 정보: secrets.yml, *.j2 (보안 정보 포함 가능성)          ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+### 🐘 Java & Gradle ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/resources/gradle-wrapper.properties
+
+### 🐍 Python & Ansible (IaC) ###
+__pycache__/
+*.py[cod]
+*$py.class
+.ansible/
+*.retry                         # Ansible 실행 실패 시 생성되는 임시 파일
+hosts                           # 개인용 인벤토리 파일 제외 권장
+
+### 💻 IDE & OS ###
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+### 🔐 Secrets & Terraform ###
+*.pem                           # 인증 키 파일
+*.tfstate                       # Terraform 상태 파일
+.env                            # 로컬 환경 변수

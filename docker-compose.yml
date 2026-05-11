@@ -1,0 +1,63 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║         🐳 docker-compose.yml (Local Integration Test)          ║
+# ║                                                                  ║
+# ║  [이 파일의 목적]                                                ║
+# ║  1. 로컬 환경에서 전체 MSA 컴포넌트의 상호작용 검증                ║
+# ║  2. K8S 배포 전 서비스 간 네트워크 및 설정 정합성 확인              ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+version: '3.8'
+
+services:
+  # 1. Config Service (중앙 집중 설정 서버)
+  config-service:
+    build: 
+      context: .
+      dockerfile: Dockerfile # 실제로는 서비스별 Dockerfile을 사용하거나 멀티타겟팅 권장
+    ports:
+      - "8888:8888"
+    networks:
+      - infra-network
+
+  # 2. Infrastructure DB
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: hooney
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: infradb
+    ports:
+      - "5432:5432"
+    networks:
+      - infra-network
+
+  # 3. Business Service (Hexagonal Core)
+  business-service:
+    build: .
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/infradb
+    depends_on:
+      - config-service
+      - db
+    networks:
+      - infra-network
+
+  # 4. Gateway Service (API Entry Point)
+  gateway-service:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+    depends_on:
+      - config-service
+      - business-service
+    networks:
+      - infra-network
+
+networks:
+  infra-network:
+    driver: bridge

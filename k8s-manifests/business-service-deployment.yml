@@ -1,0 +1,92 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║         ☸️ business-service-deployment.yml (K8S Deployment)      ║
+# ║                                                                  ║
+# ║  [운영 전략]                                                     ║
+# ║  3개의 복제본과 롤링 업데이트를 통한 고가용성 보장 및 무중단 배포    ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+apiVersion: apps/v1
+# Kubernetes 리소스의 API 그룹 및 버전 정의
+
+kind: Deployment
+# 애플리케이션 배포를 관리하는 Deployment 리소스 타입 명시
+
+metadata:
+  name: business-service
+  # 클러스터 내에서 유일한 리소스 이름 정의
+  labels:
+    # 관리 편의를 위한 메타데이터 라벨링
+    app: business-service
+
+spec:
+  replicas: 3
+  # 가용성 확보를 위해 항상 3개의 인스턴스(Pod)를 유지하도록 설정
+
+  selector:
+    # 이 Deployment가 관리할 Pod를 찾는 기준 정의
+    matchLabels:
+      app: business-service
+
+  strategy:
+    # 배포 업데이트 전략 설정
+    type: RollingUpdate
+    # 서비스 중단 없이 순차적으로 Pod를 교체하는 방식
+    rollingUpdate:
+      maxSurge: 1
+      # 업데이트 중 일시적으로 생성 가능한 최대 추가 Pod 수 (3+1=4개까지)
+      maxUnavailable: 1
+      # 업데이트 중 동시에 다운될 수 있는 최대 Pod 수 (3-1=2개 이상 유지)
+
+  template:
+    # 실제 생성될 Pod의 상세 설계도
+    metadata:
+      labels:
+        # Pod에 부여할 라벨 (Selector와 일치해야 함)
+        app: business-service
+
+    spec:
+      containers:
+        # 실행될 컨테이너 이미지 및 환경 설정
+        - name: business-service
+          # 컨테이너 이름
+          image: hooney/business-service:latest
+          # 사용할 이미지 주소 및 태그
+          ports:
+            - containerPort: 8081
+            # 컨테이너가 외부로 노출할 애플리케이션 포트
+
+          envFrom:
+            # [설정 분리] ConfigMap에 정의된 모든 키-값을 환경변수로 주입
+            - configMapRef:
+                name: business-service-config
+
+          resources:
+            # 자원 할당 및 제한 설정 (리소스 경합 및 과사용 방지)
+            requests:
+              # 최소 보장 자원 (스케줄링 기준)
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              # 최대 사용 제한 (오버플로우 방지)
+              memory: "1Gi"
+              cpu: "500m"
+          livenessProbe:
+            # [자가 치유] 애플리케이션의 프로세스가 살아있는지 검사
+            httpGet:
+              path: /actuator/health/liveness
+              # 헬스체크 엔드포인트 호출
+              port: 8081
+            initialDelaySeconds: 30
+            # 컨테이너 시작 후 30초 대기 후 검사 시작 (부팅 시간 고려)
+            periodSeconds: 10
+            # 10초마다 주기적으로 검사 수행
+          readinessProbe:
+            # [무중단 배포] 실제로 트래픽을 받을 준비가 되었는지 검사
+            httpGet:
+              path: /actuator/health/readiness
+              # 서비스 투입 준비 확인 엔드포인트
+              port: 8081
+            initialDelaySeconds: 15
+            # 15초 후 검사 시작 (웜업 시간 고려)
+            periodSeconds: 5
+            # 5초마다 검사하여 즉각 서비스 투입 결정

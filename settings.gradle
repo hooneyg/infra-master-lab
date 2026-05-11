@@ -1,0 +1,17 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║         🏟️ settings.gradle (Multi-Module Registry)              ║
+// ║                                                                  ║
+// ║  [모듈 구성]                                                     ║
+// ║  1. business-service: 헥사고날 아키텍처가 적용된 핵심 서비스       ║
+// ║  2. gateway-service: API 라우팅 및 보안 게이트웨이                ║
+// ║  3. config-service: 중앙 집중형 설정 관리 서버                    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+rootProject.name = 'infra-master-lab'
+
+// 핵심 비즈니스 서비스 (Hexagonal Architecture)
+include 'business-service'
+
+// 인프라 지원 서비스 (Spring Cloud Components)
+include 'gateway-service'
+include 'config-service'

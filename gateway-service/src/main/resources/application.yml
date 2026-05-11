@@ -1,0 +1,26 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║         ⚙️ application.yml (Gateway Service Config)             ║
+# ║                                                                  ║
+# ║  [주요 설정]                                                     ║
+# ║  1. 포트: 8080                                                   ║
+# ║  2. 라우팅: /api/** -> business-service (8081)                    ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      routes:
+        - id: business-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/**
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug

@@ -1,0 +1,23 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║         ⚙️ application.yml (Config Service Config)              ║
+# ║                                                                  ║
+# ║  [주요 설정]                                                     ║
+# ║  1. 포트: 8888                                                   ║
+# ║  2. 프로필: native (로컬 파일 시스템 기반)                        ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-service
+
+  profiles:
+    active: native
+
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config

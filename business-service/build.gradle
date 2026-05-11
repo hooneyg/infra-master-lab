@@ -1,0 +1,22 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║         🏗️ business-service (Hexagonal Core)                    ║
+// ║                                                                  ║
+// ║  [모듈 역할]                                                     ║
+// ║  1. 도메인 중심의 헥사고날 아키텍처 구현                         ║
+// ║  2. 외부 어댑터(JPA, Web)를 통한 인터페이스 제공                  ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+dependencies {
+    // Web Adapter용
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    // Persistence Adapter용
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
+    
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}
+
+bootJar { enabled = true }
+jar { enabled = false }

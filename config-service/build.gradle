@@ -1,0 +1,20 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║         ⚙️ config-service (Spring Cloud Config Server)           ║
+// ║                                                                  ║
+// ║  [모듈 역할]                                                     ║
+// ║  1. 각 마이크로서비스의 환경 설정을 중앙에서 통합 관리             ║
+// ║  2. 런타임 시 설정 변경 및 동적 반영 지원                         ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-config-server'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.0"
+    }
+}
+
+bootJar { enabled = true }
+jar { enabled = false }

@@ -1,0 +1,52 @@
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║         🏟️ build.gradle (Root Project Configuration)             ║
+// ║                                                                  ║
+// ║  [주요 설정]                                                     ║
+// ║  1. JDK 버전: Java 21 LTS (운영 표준)                             ║
+// ║  2. 프레임워크: Spring Boot 4.0.6 (차세대 레퍼런스)                ║
+// ║  3. 멀티 모듈: subprojects 블록을 통한 공통 의존성 관리             ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.6'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+allprojects {
+    group = 'com.hooney.lab'
+    version = '1.0.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    dependencies {
+        // 모든 모듈 공통: Lombok 및 테스트 라이브러리
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}
+
+// 루트 프로젝트는 JAR 생성을 하지 않음
+bootJar { enabled = false }
+jar { enabled = true }

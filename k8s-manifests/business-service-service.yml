@@ -1,0 +1,20 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║         ☸️ business-service-service.yml (K8S Service)            ║
+# ║                                                                  ║
+# ║  [매니페스트 역할]                                               ║
+# ║  1. 여러 개의 Pod를 하나의 가상 IP로 묶어 로드밸런싱 제공         ║
+# ║  2. 클러스터 내부 서비스 간 통신 엔드포인트 노출                  ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: business-service
+spec:
+  selector:
+    app: business-service
+  ports:
+    - protocol: TCP
+      port: 80 # 외부에 노출할 포트
+      targetPort: 8081 # 컨테이너 내부 포트
+  type: ClusterIP # 클러스터 내부용 (게이트웨이를 통해서만 접근)
