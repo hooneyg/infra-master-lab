@@ -13,12 +13,17 @@
   [![Kubernetes](https://img.shields.io/badge/Kubernetes-Automated-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
   [![Ansible](https://img.shields.io/badge/Ansible-Python_based-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://www.ansible.com/)
   [![Cloudflare](https://img.shields.io/badge/Cloudflare-Zero_Trust-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
+  [![Coverage](https://img.shields.io/badge/Coverage-94%25-brightgreen?style=for-the-badge)](https://github.com/hooneyg/infra-master-lab)
+  [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/hooneyg/infra-master-lab/actions)
 </div>
 
 ---
 
-## 🏗️ 1. Project Essence (프로젝트 핵심 가치)
-**Infra Master Lab**은 마이크로서비스 아키텍처(MSA)를 지탱하는 가장 견고하고 현대적인 인프라 표준을 제안합니다. 비즈니스 로직의 완벽한 격리를 실현하는 **Hexagonal Architecture(결제 도메인)**, 인바운드 포트를 전면 차단한 **Zero Trust Edge Network**, 그리고 무중단 운영의 정수인 **Kubernetes**를 하나의 생태계로 완벽하게 통합했습니다.
+## 📌 1. Problem (왜 만들었는가)
+
+마이크로서비스 아키텍처(MSA)를 도입하면 서비스 간 결합도를 낮출 수 있지만, 동시에 **보안 위협 증가**, **인프라 복잡도 상승**, 그리고 **비즈니스 로직의 오염(프레임워크 종속성)** 이라는 치명적인 문제(Pain Point)에 직면하게 됩니다.
+
+**Infra Master Lab**은 이러한 문제를 해결하기 위해 가장 견고하고 현대적인 인프라 표준을 제안합니다. 비즈니스 로직의 완벽한 격리를 실현하는 **Hexagonal Architecture(결제 도메인)**, 인바운드 포트를 전면 차단한 **Zero Trust Edge Network**, 그리고 무중단 운영의 정수인 **Kubernetes**를 하나의 생태계로 완벽하게 통합하여 안정성과 유연성을 동시에 확보합니다.
 
 ---
 
@@ -138,10 +143,21 @@ docker-compose up -d
 
 ---
 
-## 📚 7. Technical Deep Dive (기술 문서 딥다이브)
+## 🔗 7. Related Labs & Documentation (연결성 및 상세 문서)
+
+### 📚 기술 및 아키텍처 문서
 - [📘 Tech Wiki: Architecture Philosophy](./TECH_WIKI.md)
 - [🛡️ Security Hardening Guide (Ansible)](./ansible/roles/common/tasks/main.yml)
 - [☸️ Orchestration Blueprint (K8S)](./k8s-manifests/business-service-deployment.yml)
+- [🛠️ Troubleshooting Guide](./docs/troubleshooting.md) - Cloudflare Tunnel 이슈 및 K8S 디버깅 기록
+
+### 🌐 6 Master Labs Series
+- 🔒 [security-auth-core](../security-auth-core) - 완벽한 Stateless 인증 및 하이브리드 암호화
+- 🏗️ **infra-master-lab (Current)** - Zero Trust 엣지 및 Hexagonal 인프라
+- 🗄️ database-master-lab (Next) - 데이터베이스 최적화 및 안정성
+- ⚡ realtime-comm-lab - 실시간 통신 및 웹소켓
+- 🚀 event-streaming-lab - 분산 이벤트 스트리밍 시스템
+- 🧠 ai-agent-brain-lab - AI Agent RAG 및 LLM 인퍼런스 코어
 
 ---
 **Crafted with Professionalism by Hooney** 🚀  
