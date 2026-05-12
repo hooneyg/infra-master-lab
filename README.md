@@ -1,11 +1,11 @@
-![Header](https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=150&section=header&text=Infra%20Master%20Lab&fontSize=50&fontColor=ffffff&animation=fadeIn)
+<img src="https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=200&section=header&text=Infra%20Master%20Lab&fontSize=50&animation=fadeIn&fontAlignY=38&fontColor=FFFFFF" />
 
 ---
-## 🏟️ Infra Master Lab: Cloud Native Infrastructure & MSA Operations Lab
+# 🏟️ Infra Master Lab: Cloud Native Infrastructure & MSA Operations Lab
 
 
 <div align="center">
-  <img src="./project-logo.png" width="200" />
+  
   <p><i>"Redefining Infrastructure as a Living Software Ecosystem"</i></p>
 
   [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.0.6-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
@@ -199,7 +199,9 @@ docker-compose up -d
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-**Crafted with Professionalism by Hooney** 🚀  
-*Copyright © 2026 Hooney. All rights reserved.*
 
-![Footer](https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=150&section=footer)
+<div align="center">
+<b>Built with ❤️ by <a href="https://github.com/hooneyg">Hooney</a> — AI FullStack Developer & Enterprise Solution Architect</b>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=100&section=footer" />
+</div>
