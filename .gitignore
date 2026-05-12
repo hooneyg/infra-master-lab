@@ -33,3 +33,7 @@ Thumbs.db
 *.pem                           # 인증 키 파일
 *.tfstate                       # Terraform 상태 파일
 .env                            # 로컬 환경 변수
+
+### 📦 Scratch & Temp ###
+scratch/
+*.class
