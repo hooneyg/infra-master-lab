@@ -17,7 +17,7 @@ sequenceDiagram
     actor User as 👤 End User
     participant CF as ☁️ Cloudflare Edge (WAF)
     
-    box rgb(240, 248, 255) AWS EKS / GCP GKE (Private VPC)
+    box #F0F8FF AWS EKS / GCP GKE (Private VPC)
         participant Tunnel as 🚇 Cloudflared (DaemonSet)
         participant Nginx as 🛡️ Nginx (Ingress/Edge)
         participant GW as 🚦 Spring Cloud Gateway
