@@ -12,6 +12,7 @@
   [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/projects/jdk/21/)
   [![Kubernetes](https://img.shields.io/badge/Kubernetes-Automated-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
   [![Ansible](https://img.shields.io/badge/Ansible-Python_based-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://www.ansible.com/)
+  [![Terraform](https://img.shields.io/badge/Terraform-IaC_Provisioning-844FBA?style=for-the-badge&logo=terraform&logoColor=white)](https://www.terraform.io/)
   [![Cloudflare](https://img.shields.io/badge/Cloudflare-Zero_Trust-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
   [![Coverage](https://img.shields.io/badge/Coverage-94%25-brightgreen?style=for-the-badge)](https://github.com/hooneyg/infra-master-lab)
   [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/hooneyg/infra-master-lab/actions)
@@ -90,6 +91,17 @@ infra-master-lab/
 │       │   ├── domain/         # 순수 POJO Domain
 │       │   └── framework/      # Adapter (OutPort, Web, DB)
 │       └── test/               # 아키텍처 및 도메인 격리 검증 단위 테스트
+├── terraform/                  # 🏗️ Terraform IaC — Day 0 인프라 프로비저닝
+│   ├── environments/
+│   │   ├── local/              # 🐳 Docker Provider 기반 로컬 Lab (무료)
+│   │   └── aws-reference/      # ☁️ AWS 프로덕션 레퍼런스 (참고용)
+│   └── modules/                # 📦 재사용 가능한 Terraform 모듈
+│       ├── network/            # Docker 브릿지 네트워크 모듈
+│       └── docker-service/     # 범용 컨테이너 서비스 모듈
+├── ansible/                    # 🔧 Ansible IaC — Day 1+ 구성 관리
+│   ├── roles/common/           # OS 공통 설정 (패키지, 방화벽, NTP)
+│   ├── roles/docker/           # Docker/Docker Compose 설치
+│   └── site.yml                # 메인 플레이북
 ├── infra/
 │   ├── edge-proxy/             # 🛡️ Zero Trust Nginx & Cloudflared 설정
 │   └── service-mesh/           # 🕸️ Spring Cloud Gateway & Config Server
@@ -113,6 +125,13 @@ infra-master-lab/
 
 ### ✅ 증거 3: Pythonic Infrastructure (IaC) & K8s
 사람이 손으로 직접 타이핑하는 서버 설정은 지양합니다. Ansible과 K8s 매니페스트를 통한 `Rolling Update`로 무중단 배포 시스템을 구축했습니다.
+
+### ✅ 증거 4: IaC 이원화 — Terraform (Day 0) + Ansible (Day 1+)
+인프라 자동화의 두 축을 완벽하게 분리하여 산업 표준 IaC 파이프라인을 구축했습니다.
+- **[ADR-003: Terraform Docker Provider 도입 결정문](./docs/decisions/ADR-003-terraform-docker-provider.md)**
+- **Terraform**: Docker Provider로 MSA 컨테이너/네트워크를 선언형으로 프로비저닝 → State File로 드리프트 감지
+- **Ansible**: 프로비저닝된 인프라 위에 OS 설정, 패키지 설치, 보안 구성을 절차적으로 적용
+- 📖 **[Terraform 사용 가이드](./terraform/README.md)** — Quick Start, 모듈 구조, Ansible 연동 워크플로우
 
 ---
 
@@ -147,7 +166,8 @@ docker-compose up -d
 
 ### 📚 기술 및 아키텍처 문서
 - [📘 Tech Wiki: Architecture Philosophy](./TECH_WIKI.md)
-- [🛡️ Security Hardening Guide (Ansible)](./ansible/roles/common/tasks/main.yml)
+- [🏗️ Terraform IaC Guide](./terraform/README.md) — Day 0 인프라 프로비저닝
+- [🛡️ Security Hardening Guide (Ansible)](./ansible/roles/common/tasks/main.yml) — Day 1+ 구성 관리
 - [☸️ Orchestration Blueprint (K8S)](./k8s-manifests/business-service-deployment.yml)
 - [🛠️ Troubleshooting Guide](./docs/troubleshooting.md) - Cloudflare Tunnel 이슈 및 K8S 디버깅 기록
 
