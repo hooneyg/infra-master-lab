@@ -1,7 +1,7 @@
 ![Header](https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=150&section=header&text=Infra%20Master%20Lab&fontSize=50&fontColor=ffffff&animation=fadeIn)
 
 ---
-## 🏟️ Infra Master Lab: The Pinnacle of Cloud Native Architecture
+## 🏟️ Infra Master Lab: Cloud Native Infrastructure & MSA Operations Lab
 
 
 <div align="center">
@@ -20,15 +20,15 @@
 
 ---
 
-## 📌 1. Problem (왜 만들었는가)
+## 📌 Problem — 왜 만들었는가
 
 마이크로서비스 아키텍처(MSA)를 도입하면 서비스 간 결합도를 낮출 수 있지만, 동시에 **보안 위협 증가**, **인프라 복잡도 상승**, 그리고 **비즈니스 로직의 오염(프레임워크 종속성)** 이라는 치명적인 문제(Pain Point)에 직면하게 됩니다.
 
-**Infra Master Lab**은 이러한 문제를 해결하기 위해 가장 견고하고 현대적인 인프라 표준을 제안합니다. 비즈니스 로직의 완벽한 격리를 실현하는 **Hexagonal Architecture(결제 도메인)**, 인바운드 포트를 전면 차단한 **Zero Trust Edge Network**, 그리고 무중단 운영의 정수인 **Kubernetes**를 하나의 생태계로 완벽하게 통합하여 안정성과 유연성을 동시에 확보합니다.
+**Infra Master Lab**은 이러한 문제를 해결하기 위해 가장 견고하고 현대적인 인프라 표준을 제안합니다. 비즈니스 로직의 도메인 경계 격리를 실현하는 **Hexagonal Architecture(결제 도메인)**, 인바운드 포트를 전면 차단한 **Zero Trust Edge Network**, 그리고 무중단 운영의 정수인 **Kubernetes**를 하나의 생태계로 완벽하게 통합하여 안정성과 유연성을 동시에 확보합니다.
 
 ---
 
-## 🌐 2. MSA Blueprint & Ecosystem (아키텍처 조감도)
+## 🏗️ Architecture — 어떻게 설계했는가
 
 이 도식은 외부 트래픽이 엣지 보안망을 뚫고 들어와 순수 결제 도메인 로직에 안전하게 닿는 전체 흐름을 보여줍니다.
 
@@ -78,7 +78,7 @@ graph TB
 
 ---
 
-## 📂 3. Project Structure
+## 📂 Project Structure
 
 ```text
 infra-master-lab/
@@ -111,9 +111,9 @@ infra-master-lab/
 
 ---
 
-## ⚔️ 4. Key Technological Pillars (증거 기반 핵심 기술)
+## 🎯 Key Features & Evidence (핵심 기능 및 증명)
 
-### ✅ 증거 1: Hexagonal Isolation (결제 도메인 완벽 격리)
+### ✅ 증거 1: Hexagonal Isolation (결제 도메인 경계 격리)
 기존 3-Layered 구조의 한계를 벗어나, 외부 기술(Toss, Stripe)이 바뀌어도 도메인은 단 한 줄도 흔들리지 않습니다.
 - **[ADR-001: Hexagonal Architecture 채택 결정문](./docs/decisions/ADR-001-hexagonal-architecture.md)**
 - 순수 자바 객체만으로 0.01초 만에 비즈니스 로직을 검증하는 [단위 테스트 코드](./business-service/src/test/java/com/hooney/lab/business/payment/application/service/PaymentServiceTest.java) 구현 완료.
@@ -135,7 +135,7 @@ infra-master-lab/
 
 ---
 
-## 🚀 5. Quick Start & Traffic Scenarios (실행 및 시나리오)
+## ⚡ Quick Start & Traffic Scenarios
 
 백문이 불여일견입니다. **IntelliJ 또는 VSCode REST Client**에서 즉시 실행 가능한 시나리오 스크립트를 제공합니다.
 
@@ -151,7 +151,7 @@ docker-compose up -d
 
 ---
 
-## 🧪 6. Tests — 어떻게 검증했는가
+## 🧪 Tests — 어떻게 검증했는가
 
 ```bash
 ./gradlew test
@@ -162,22 +162,41 @@ docker-compose up -d
 
 ---
 
-## 🔗 7. Related Labs & Documentation (연결성 및 상세 문서)
+## 🧭 Roadmap
 
-### 📚 기술 및 아키텍처 문서
+- [ ] Helm chart 구성
+- [ ] Blue/Green 또는 Canary deployment 예제
+- [ ] Observability stack 연동
+- [ ] GitOps 배포 흐름
+- [ ] Kubernetes health check와 rollout 검증 강화
+
+---
+
+## 🔗 Related Labs
+
+| Related Lab | 연결 이유 |
+| --- | --- |
+| `security-auth-core` | API 또는 연결 요청의 인증/인가 기준 |
+| `database-master-lab` | 상태 저장, 조회, 성능 최적화 기준 |
+| `event-streaming-lab` | 비동기 이벤트 처리와 실패 복구 기준 |
+| `realtime-comm-lab` | 실시간 연결과 메시지 전달 기준 |
+| `ai-agent-brain-lab` | LAB 문서 기반 AI 질의/자동화 확장 기준 |
+
+---
+
+## 📚 Documentation
+
 - [📘 Tech Wiki: Architecture Philosophy](./TECH_WIKI.md)
 - [🏗️ Terraform IaC Guide](./terraform/README.md) — Day 0 인프라 프로비저닝
 - [🛡️ Security Hardening Guide (Ansible)](./ansible/roles/common/tasks/main.yml) — Day 1+ 구성 관리
 - [☸️ Orchestration Blueprint (K8S)](./k8s-manifests/business-service-deployment.yml)
 - [🛠️ Troubleshooting Guide](./docs/troubleshooting.md) - Cloudflare Tunnel 이슈 및 K8S 디버깅 기록
 
-### 🌐 6 Master Labs Series
-- 🔒 [security-auth-core](../security-auth-core) - 완벽한 Stateless 인증 및 하이브리드 암호화
-- 🏗️ **infra-master-lab (Current)** - Zero Trust 엣지 및 Hexagonal 인프라
-- 🗄️ database-master-lab (Next) - 데이터베이스 최적화 및 안정성
-- ⚡ realtime-comm-lab - 실시간 통신 및 웹소켓
-- 🚀 event-streaming-lab - 분산 이벤트 스트리밍 시스템
-- 🧠 ai-agent-brain-lab - AI Agent RAG 및 LLM 인퍼런스 코어
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 **Crafted with Professionalism by Hooney** 🚀  
