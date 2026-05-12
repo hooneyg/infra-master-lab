@@ -1,3 +1,5 @@
+![Header](https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=150&section=header&text=Infra%20Master%20Lab&fontSize=50&fontColor=ffffff&animation=fadeIn)
+
 # 🏟️ Infra Master Lab: The Pinnacle of Cloud Native Architecture
 
 <div align="center">
@@ -120,3 +122,5 @@ docker-compose up -d
 ---
 **Crafted with Professionalism by Hooney** 🚀  
 *Copyright © 2026 Hooney. All rights reserved.*
+
+![Footer](https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=150&section=footer)
