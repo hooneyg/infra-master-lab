@@ -8,160 +8,114 @@
   [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/projects/jdk/21/)
   [![Kubernetes](https://img.shields.io/badge/Kubernetes-Automated-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
   [![Ansible](https://img.shields.io/badge/Ansible-Python_based-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://www.ansible.com/)
+  [![Cloudflare](https://img.shields.io/badge/Cloudflare-Zero_Trust-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
 </div>
 
 ---
 
-## 🏗️ Project Essence
-**Infra Master Lab**은 마이크로서비스 아키텍처(MSA)를 지탱하는 가장 견고하고 현대적인 인프라 표준을 제안합니다. 비즈니스 로직의 완벽한 격리를 실현하는 **Hexagonal Architecture**, 선언적 인프라 자동화를 구현하는 **Ansible**, 그리고 무중단 운영의 정수인 **Kubernetes**를 하나의 생태계로 통합했습니다.
+## 🏗️ 1. Project Essence (프로젝트 핵심 가치)
+**Infra Master Lab**은 마이크로서비스 아키텍처(MSA)를 지탱하는 가장 견고하고 현대적인 인프라 표준을 제안합니다. 비즈니스 로직의 완벽한 격리를 실현하는 **Hexagonal Architecture(결제 도메인)**, 인바운드 포트를 전면 차단한 **Zero Trust Edge Network**, 그리고 무중단 운영의 정수인 **Kubernetes**를 하나의 생태계로 완벽하게 통합했습니다.
 
 ---
 
-## 🌐 MSA Blueprint & Ecosystem
+## 🌐 2. MSA Blueprint & Ecosystem (아키텍처 조감도)
 
-Infra Master Lab이 지향하는 현대적 마이크로서비스 생태계의 전체 청사진입니다. 이 도식은 트래픽의 유입부터 비즈니스 실행, 그리고 이를 지탱하는 자동화 인프라의 유기적 관계를 보여줍니다.
+이 도식은 외부 트래픽이 엣지 보안망을 뚫고 들어와 순수 결제 도메인 로직에 안전하게 닿는 전체 흐름을 보여줍니다.
 
 ```mermaid
 graph TB
     subgraph Client ["🌐 External Traffic"]
         User["End User / App"]
-        Mobile["Mobile Client"]
     end
 
-    subgraph Edge ["🛡️ Security & Routing (Gateway)"]
-        Gateway["Spring Cloud Gateway<br/>(Auth / Rate Limit)"]
+    subgraph EdgeProxy ["🛡️ Zero Trust Edge Proxy (infra/edge-proxy)"]
+        CF["Cloudflare Edge (WAF)"]
+        Tunnel["Cloudflared (Outbound Tunnel)"]
+        Nginx["Nginx Reverse Proxy"]
+        
+        CF -->|Ingress| Tunnel --> Nginx
     end
 
-    subgraph ServiceMesh ["🏗️ Microservice Ecosystem (K8S)"]
-        subgraph BusinessService ["Hexagonal Service (Business)"]
-            InPort["Input Port"]
-            Domain["Domain Core"]
-            OutPort["Output Port"]
+    subgraph ServiceMesh ["🏗️ Microservice Ecosystem"]
+        Gateway["Spring Cloud Gateway<br/>(Routing / Security)"]
+        
+        subgraph BusinessService ["Payment Domain (Hexagonal)"]
+            InPort["ProcessPaymentUseCase"]
+            Domain["Payment (Pure POJO)"]
+            OutPort["PaymentGatewayPort"]
             
             InPort --> Domain --> OutPort
         end
         
-        subgraph Support ["Control Plane"]
-            Eureka["Discovery (Eureka)"]
-            Config["Config Server"]
-            Vault["Secrets (Vault)"]
-        end
+        Config["Config Server"]
     end
 
-    subgraph Persistence ["🗄️ Data Layer"]
-        DB["PostgreSQL / Redis"]
-    end
-
-    subgraph Observability ["📊 Monitoring & Tracing"]
-        Prom["Prometheus / Grafana"]
-        Zipkin["Zipkin / Jaeger"]
-    end
-
-    subgraph Foundation ["🐍 Infrastructure as Code"]
-        Ansible["Ansible (Python)"]
-        Docker["Docker Runtime"]
+    subgraph Outbound ["🗄️ External Adapters"]
+        PG["Toss Payments / Stripe (Adapter)"]
     end
 
     %% 연결 흐름 정의
-    Client --> Gateway
-    Gateway --> Eureka
+    User -->|HTTPS| CF
+    Nginx --> Gateway
     Gateway --> InPort
-    OutPort --> DB
-    
-    ServiceMesh --> Prom
-    ServiceMesh --> Zipkin
-    
-    Ansible --> Docker
-    Docker --> ServiceMesh
+    OutPort -.->|implements| PG
+    Gateway -.->|binds| Config
 
     %% 스타일링
     style BusinessService fill:#F0F9FF,stroke:#0369A1,stroke-width:2px
-    style Support fill:#F8FAFC,stroke:#64748B
-    style Edge fill:#FFF7ED,stroke:#C2410C
+    style EdgeProxy fill:#FFF7ED,stroke:#C2410C,stroke-width:2px
 ```
-
-### 🛰️ Ecosystem Highlights
-- **Unified Gateway**: 모든 외부 요청은 보안이 강화된 단일 진입점(Gateway)을 통해 제어됩니다.
-- **Hexagonal Core**: 비즈니스 로직은 도메인 중심으로 설계되어 인프라 변경에 영향받지 않습니다.
-- **Automated Foundation**: Ansible과 Docker를 통해 서버 초기화부터 런타임 구성까지 선언적으로 관리합니다.
-- **Full Observability**: 시스템의 모든 트래픽과 상태는 프로메테우스와 집킨을 통해 실시간으로 추적됩니다.
 
 ---
 
-## ⚔️ Key Technological Pillars (Killing Verses)
+## ⚔️ 3. Key Technological Pillars (증거 기반 핵심 기술)
 
-### 💎 1. Hexagonal Isolation (DIP)
-- 외부 기술(DB, API)이 바뀌어도 도메인은 흔들리지 않습니다.
-- 어댑터 스위칭만으로 영속성 기술을 JPA에서 NoSQL로 즉시 교체 가능함을 증명합니다.
+### ✅ 증거 1: Hexagonal Isolation (결제 도메인 완벽 격리)
+기존 3-Layered 구조의 한계를 벗어나, 외부 기술(Toss, Stripe)이 바뀌어도 도메인은 단 한 줄도 흔들리지 않습니다.
+- **[ADR-001: Hexagonal Architecture 채택 결정문](./docs/decisions/ADR-001-hexagonal-architecture.md)**
+- 순수 자바 객체만으로 0.01초 만에 비즈니스 로직을 검증하는 [단위 테스트 코드](./business-service/src/test/java/com/hooney/lab/business/payment/application/service/PaymentServiceTest.java) 구현 완료.
 
-### 🐍 2. Pythonic Infrastructure (IaC)
-- 사람이 손으로 하는 설정은 지양합니다.
-- Ansible과 Python을 통해 서버 초기화부터 보안 하드닝까지 코드 한 방으로 끝냅니다.
+### ✅ 증거 2: Zero Trust Network (Cloudflare Tunnel)
+서버의 인바운드 포트를 모두 차단(`ports: "80:80"` 제거)하여 포트 스캐닝 및 직접적인 DDoS 공격을 원천 차단했습니다.
+- **[ADR-002: Cloudflare 기반 Zero Trust 채택 결정문](./docs/decisions/ADR-002-edge-security-cloudflare.md)**
+- Cloudflare IP 복원 및 보안 헤더가 주입된 [엔터프라이즈 Nginx 설정](./infra/edge-proxy/nginx.conf).
 
-### ☸️ 3. Cloud Native Resilience (K8S)
-- 장애는 피할 수 없지만, 중단은 피할 수 있습니다.
-- `Liveness/Readiness Probe`와 `Rolling Update`로 무중단 자가 치유 시스템을 구축했습니다.
+### ✅ 증거 3: Pythonic Infrastructure (IaC) & K8s
+사람이 손으로 직접 타이핑하는 서버 설정은 지양합니다. Ansible과 K8s 매니페스트를 통한 `Rolling Update`로 무중단 배포 시스템을 구축했습니다.
 
 ---
 
-## 🚀 Getting Started & Execution Plan
+## 🚀 4. Quick Start & Traffic Scenarios (실행 및 시나리오)
 
-본 프로젝트는 인프라 구축부터 애플리케이션 운영까지 4단계의 체계적인 실행 전략을 지향합니다.
+백문이 불여일견입니다. **IntelliJ 또는 VSCode REST Client**에서 즉시 실행 가능한 시나리오 스크립트를 제공합니다.
 
-### 🏁 Phase 1: Build & Artifact Preparation
-먼저 Java 소스 코드를 빌드하고 컨테이너 이미지를 생성합니다.
+- 📖 **[Zero Trust 인그레스 및 헥사고날 결제 라우팅 시나리오 읽어보기](./docs/msa-scenarios.md)**
+- 🚀 **[실행 가능한 HTTP 스크립트 열기 (`scenarios.http`)](./examples/scenarios.http)** 
+
+### 로컬 통합 검증 (Docker Compose)
+Kubernetes 배포 전, 로컬에서 전체 MSA 생태계의 정합성을 원클릭으로 검증합니다.
 ```bash
-# 1. Gradle 빌드 (아티팩트 생성)
-./gradlew clean build
-
-# 2. Docker 이미지 빌드 (멀티 스테이지 최적화)
-docker build -t hooney/infra-master-lab:latest .
-```
-
-### 🧪 Phase 2: Local Integration Verification (Docker Compose)
-Kubernetes 배포 전, 로컬에서 전체 MSA 생태계의 정합성을 검증합니다.
-```bash
-# 로컬 통합 환경 기동 (Config + DB + Business + Gateway)
+# 엣지 프록시 및 백엔드 서비스 백그라운드 구동
 docker-compose up -d
-
-# 서비스 상태 확인
-docker-compose ps
-```
-
-### 🐍 Phase 3: Infrastructure Hardening (Ansible)
-대상 서버에 보안 정책을 적용하고 컨테이너 런타임을 구축합니다.
-```bash
-# 인벤토리 확인 및 접속 테스트
-ansible all -m ping -i ansible/inventory/hosts.ini
-
-# 인프라 자동화 플레이북 실행
-ansible-playbook -i ansible/inventory/hosts.ini ansible/site.yml
-```
-
-### ☸️ Phase 4: Cloud Native Deployment (Kubernetes)
-최종적으로 고가용성이 보장되는 K8S 클러스터에 서비스를 런칭합니다.
-```bash
-# 매니페스트 적용 (Deployment & Service)
-kubectl apply -f k8s-manifests/
-
-# 롤링 업데이트 상태 모니터링
-kubectl rollout status deployment/business-service
 ```
 
 ---
 
-## 🛠️ Tech Stack Intentions
-- **Java 21 / Spring Boot 4.0.6**: 최신 LTS 버전과 프레임워크로 성능과 안정성 확보.
-- **Hexagonal Architecture**: 기술 부채를 도메인에서 격리하여 유지보수성 극대화.
-- **Everything as Code (IaC)**: 인프라의 모든 변경 사항을 버전 관리 시스템(Git)으로 추적.
+## 🧪 5. Tests — 어떻게 검증했는가
+
+```bash
+./gradlew test
+```
+- **Domain Layer (Hexagonal)**: 외부 DB나 무거운 스프링 컨텍스트 로딩 없이, 순수 결제 도메인의 승인/거절 상태 전이 완벽 검증.
+- **Gateway Layer**: `WebTestClient`를 활용한 `/api/payment/**` 라우팅 규칙 및 보안 헤더(`X-Frame-Options` 등) 주입 검증.
+- **Config Layer**: 중앙 집중형 설정값의 암복호화 및 프로파일 분리 검증.
 
 ---
 
-## 📚 Technical Deep Dive
+## 📚 6. Technical Deep Dive (기술 문서 딥다이브)
 - [📘 Tech Wiki: Architecture Philosophy](./TECH_WIKI.md)
 - [🛡️ Security Hardening Guide (Ansible)](./ansible/roles/common/tasks/main.yml)
 - [☸️ Orchestration Blueprint (K8S)](./k8s-manifests/business-service-deployment.yml)
-- [🐳 Local Orchestration (Docker Compose)](./docker-compose.yml)
 
 ---
 **Crafted with Professionalism by Hooney** 🚀  

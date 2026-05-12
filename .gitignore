@@ -10,6 +10,7 @@
 ### 🐘 Java & Gradle ###
 .gradle/
 build/
+bin/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/resources/gradle-wrapper.properties
 

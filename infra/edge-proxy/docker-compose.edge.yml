@@ -1,0 +1,40 @@
+version: '3.8'
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║        🛡️ Edge Proxy Network (Zero Trust Architecture)          ║
+# ║                                                                  ║
+# ║  [핵심 보안 설계]                                                ║
+# ║  이 docker-compose의 핵심은 "인바운드 포트 개방 없음" 입니다.    ║
+# ║  외부 인터넷에서 로컬망으로 직접 들어오는 포트 매핑(ports: "80:80")이 존재하지 않습니다. ║
+# ║  오직 cloudflared 데몬이 내부망에서 외부로 터널을 열고 통신을 가져옵니다. ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+services:
+  # 1. Edge Reverse Proxy (Nginx)
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: edge-nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    # ⚠️ 보안 주의: ports: "80:80" 구문이 의도적으로 누락되어 있습니다! (외부 직접 접근 완벽 차단)
+    networks:
+      - edge_net
+
+  # 2. Cloudflare Zero Trust Tunnel Daemon
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: edge-cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      # 실제 클라우드플레어 대시보드(Zero Trust)에서 발급받은 터널 토큰을 기입합니다.
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN:-"your_mock_token_here"}
+    networks:
+      - edge_net
+    depends_on:
+      - nginx
+
+networks:
+  edge_net:
+    driver: bridge
