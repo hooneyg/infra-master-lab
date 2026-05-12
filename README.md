@@ -1,6 +1,8 @@
 ![Header](https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=150&section=header&text=Infra%20Master%20Lab&fontSize=50&fontColor=ffffff&animation=fadeIn)
 
-# 🏟️ Infra Master Lab: The Pinnacle of Cloud Native Architecture
+---
+## 🏟️ Infra Master Lab: The Pinnacle of Cloud Native Architecture
+
 
 <div align="center">
   <img src="./project-logo.png" width="200" />
@@ -70,7 +72,29 @@ graph TB
 
 ---
 
-## ⚔️ 3. Key Technological Pillars (증거 기반 핵심 기술)
+## 📂 3. Project Structure
+
+```text
+infra-master-lab/
+├── business-service/           # 🏢 헥사고날 아키텍처 기반 비즈니스 도메인 (Payment)
+│   ├── build.gradle            # Spring Boot 4.0.6, Java 21
+│   ├── Dockerfile
+│   └── src/
+│       ├── main/java/com/hooney/lab/business/payment/
+│       │   ├── application/    # UseCase (InPort) & Service
+│       │   ├── domain/         # 순수 POJO Domain
+│       │   └── framework/      # Adapter (OutPort, Web, DB)
+│       └── test/               # 아키텍처 및 도메인 격리 검증 단위 테스트
+├── infra/
+│   ├── edge-proxy/             # 🛡️ Zero Trust Nginx & Cloudflared 설정
+│   └── service-mesh/           # 🕸️ Spring Cloud Gateway & Config Server
+├── docs/                       # 📚 ADR(Architecture Decision Records) 문서
+└── docker-compose.yml          # 인프라 전체 스택 원클릭 실행 (Scale-out 포함)
+```
+
+---
+
+## ⚔️ 4. Key Technological Pillars (증거 기반 핵심 기술)
 
 ### ✅ 증거 1: Hexagonal Isolation (결제 도메인 완벽 격리)
 기존 3-Layered 구조의 한계를 벗어나, 외부 기술(Toss, Stripe)이 바뀌어도 도메인은 단 한 줄도 흔들리지 않습니다.
@@ -87,7 +111,7 @@ graph TB
 
 ---
 
-## 🚀 4. Quick Start & Traffic Scenarios (실행 및 시나리오)
+## 🚀 5. Quick Start & Traffic Scenarios (실행 및 시나리오)
 
 백문이 불여일견입니다. **IntelliJ 또는 VSCode REST Client**에서 즉시 실행 가능한 시나리오 스크립트를 제공합니다.
 
@@ -103,7 +127,7 @@ docker-compose up -d
 
 ---
 
-## 🧪 5. Tests — 어떻게 검증했는가
+## 🧪 6. Tests — 어떻게 검증했는가
 
 ```bash
 ./gradlew test
@@ -114,7 +138,7 @@ docker-compose up -d
 
 ---
 
-## 📚 6. Technical Deep Dive (기술 문서 딥다이브)
+## 📚 7. Technical Deep Dive (기술 문서 딥다이브)
 - [📘 Tech Wiki: Architecture Philosophy](./TECH_WIKI.md)
 - [🛡️ Security Hardening Guide (Ansible)](./ansible/roles/common/tasks/main.yml)
 - [☸️ Orchestration Blueprint (K8S)](./k8s-manifests/business-service-deployment.yml)
