@@ -9,11 +9,11 @@
 FROM eclipse-temurin:21-jdk-alpine AS builder 
 WORKDIR /build                                 
 
-# [핵심] 빌드 시점에 docker-compose가 넘겨줄 모듈명을 인자로 받음
-ARG MODULE_NAME
+# [핵심] 빌드 시점에 docker-compose가 넘겨줄 모듈명을 인자로 받음 (기본값: business-service)
+ARG MODULE_NAME=business-service
 
 COPY . .
-RUN chmod +x ./gradlew                         
+RUN sed -i 's/\r$//' ./gradlew && chmod +x ./gradlew                         
 
 # 주입받은 특정 모듈만 찝어서 빌드 (예: :config-service:bootJar)
 RUN ./gradlew :${MODULE_NAME}:bootJar -x test
@@ -22,8 +22,8 @@ RUN ./gradlew :${MODULE_NAME}:bootJar -x test
 FROM eclipse-temurin:21-jre-alpine             
 WORKDIR /app                                    
 
-# [핵심] 실행(복사) 단계에서도 주입받은 모듈명을 사용하기 위해 다시 선언
-ARG MODULE_NAME
+# [핵심] 실행(복사) 단계에서도 주입받은 모듈명을 사용하기 위해 다시 선언 (기본값: business-service)
+ARG MODULE_NAME=business-service
 
 RUN addgroup -S hooney && adduser -S hooney -G hooney
 USER hooney                                     
