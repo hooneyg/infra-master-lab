@@ -4,6 +4,7 @@
 # ║  [주요 설정]                                                     ║
 # ║  1. 포트: 8080                                                   ║
 # ║  2. 라우팅: /api/** -> business-service (8081)                    ║
+# ║  3. Spring Boot 4.0.x 마이그레이션 완료                           ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 server:
@@ -15,11 +16,19 @@ spring:
 
   cloud:
     gateway:
-      routes:
-        - id: business-service
-          uri: http://localhost:8081
-          predicates:
-            - Path=/api/**
+      server:
+        webflux:
+          routes:
+            - id: business-service
+              uri: ${BUSINESS_SERVICE_URI:http://localhost:8081}
+              predicates:
+                - Path=/api/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
 
 logging:
   level:

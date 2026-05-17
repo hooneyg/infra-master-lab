@@ -3,10 +3,13 @@
 # ║                                                                  ║
 # ║  [주요 설정]                                                     ║
 # ║  1. 포트: 8081                                                   ║
-# ║  2. DB: H2 In-memory (테스트용)                                  ║
+# ║  2. DB: H2 In-memory (로컬 개발용) / PostgreSQL (prod 도커용)   ║
 # ║  3. JPA: Hibernate SQL 로깅 활성화                               ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
+# ──────────────────────────────────────────────────────────────────
+# 1. 기본 프로필 (로컬 개발용: H2 In-Memory)
+# ──────────────────────────────────────────────────────────────────
 server:
   port: 8081
 
@@ -33,6 +36,43 @@ spring:
       hibernate:
         format_sql: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
 logging:
   level:
     com.hooney.lab: debug
+---
+# ──────────────────────────────────────────────────────────────────
+# 2. 운영/도커용 설정 (Prod 프로필: PostgreSQL 연동)
+# ──────────────────────────────────────────────────────────────────
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/infradb}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:hooney}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    # HikariCP 연결 재시도 설정 (DB 기동 지연 대응)
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  h2:
+    console:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        # DB 연결 실패 시에도 Dialect 추론 오류 방지를 위해 명시 선언
+        dialect: org.hibernate.dialect.PostgreSQLDialect
