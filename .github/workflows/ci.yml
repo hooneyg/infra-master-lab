@@ -49,7 +49,7 @@ jobs:
       # Step 5: Docker 빌드 가능 여부 체크
       # 인프라 마스터 랩이므로 도커 파일의 무결성이 매우 중요합니다.
       - name: 🐳 Docker Build Verification
-        run: docker build -t hooney/infra-master-lab:check .
+        run: docker build -t hooney/infra-master-lab:check --build-arg MODULE_NAME=business-service .
 
       # Step 6: 테스트 리포트 업로드 (실패 시 원인 파악용)
       - name: 📊 Upload Test Results
