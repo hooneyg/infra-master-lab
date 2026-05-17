@@ -7,12 +7,16 @@
 // ╚══════════════════════════════════════════════════════════════════╝
 
 dependencies {
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    // Spring Cloud Gateway (WebFlux 기반 리액티브 게이트웨이)
+    // Spring Boot 4.0.x부터 아티팩트명이 변경됨: gateway → gateway-server-webflux
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.0"
+        // Spring Boot 4.0.x 호환 릴리즈 트레인: 2025.1.x (Oakwood)
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2025.1.1"
     }
 }
 

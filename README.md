@@ -1,166 +1,192 @@
+<div align="center">
+
 <img src="https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=200&section=header&text=Infra%20Master%20Lab&fontSize=50&animation=fadeIn&fontAlignY=38&fontColor=FFFFFF" />
 
----
-# 🏟️ Infra Master Lab: Cloud Native Infrastructure & MSA Operations Lab
+<h3>🏟️ Cloud Native Infrastructure, Zero Trust Edge, and MSA Operations Lab</h3>
 
+<p>
+  <img src="https://img.shields.io/badge/Java-21_LTS-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
+  <img src="https://img.shields.io/badge/Spring_Boot-4.0.6-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" />
+  <img src="https://img.shields.io/badge/Kubernetes-Automated-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white" />
+  <img src="https://img.shields.io/badge/Terraform-IaC_Provisioning-844FBA?style=for-the-badge&logo=terraform&logoColor=white" />
+  <img src="https://img.shields.io/badge/Ansible-Day_1_Operations-EE0000?style=for-the-badge&logo=ansible&logoColor=white" />
+</p>
 
-<div align="center">
-  
-  <p><i>"Redefining Infrastructure as a Living Software Ecosystem"</i></p>
+<p>
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" />
+  <img src="https://img.shields.io/badge/Coverage-94%25-brightgreen?style=flat-square" />
+  <img src="https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square&logo=githubactions&logoColor=white" />
+</p>
 
-  [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.0.6-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
-  [![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/projects/jdk/21/)
-  [![Kubernetes](https://img.shields.io/badge/Kubernetes-Automated-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
-  [![Ansible](https://img.shields.io/badge/Ansible-Python_based-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://www.ansible.com/)
-  [![Terraform](https://img.shields.io/badge/Terraform-IaC_Provisioning-844FBA?style=for-the-badge&logo=terraform&logoColor=white)](https://www.terraform.io/)
-  [![Cloudflare](https://img.shields.io/badge/Cloudflare-Zero_Trust-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
-  [![Coverage](https://img.shields.io/badge/Coverage-94%25-brightgreen?style=for-the-badge)](https://github.com/hooneyg/infra-master-lab)
-  [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/hooneyg/infra-master-lab/actions)
 </div>
+
+---
+
+> MSA 운영 환경에서 보안, 배포, 구성 관리, 도메인 격리를 함께 다루는 Cloud Native 인프라 레퍼런스입니다.  
+> Hexagonal Architecture, Zero Trust Edge, Terraform Day 0 provisioning, Ansible Day 1 operations를 하나의 운영 생태계로 통합합니다.
 
 ---
 
 ## 📌 Problem — 왜 만들었는가
 
-마이크로서비스 아키텍처(MSA)를 도입하면 서비스 간 결합도를 낮출 수 있지만, 동시에 **보안 위협 증가**, **인프라 복잡도 상승**, 그리고 **비즈니스 로직의 오염(프레임워크 종속성)** 이라는 치명적인 문제(Pain Point)에 직면하게 됩니다.
+- **MSA 운영 복잡도**: 서비스가 늘어날수록 라우팅, 설정, 배포, 장애 격리가 어려워집니다.
+- **보안 경계 약화**: 외부 인바운드 포트 노출은 포트 스캐닝과 직접 공격면을 넓힙니다.
+- **도메인 오염**: 인프라와 프레임워크 관심사가 비즈니스 로직에 침투하면 변경 비용이 커집니다.
+- **수작업 운영 리스크**: 서버 설정과 배포가 사람의 기억에 의존하면 환경 편차와 장애 대응 비용이 커집니다.
 
-**Infra Master Lab**은 이러한 문제를 해결하기 위해 가장 견고하고 현대적인 인프라 표준을 제안합니다. 비즈니스 로직의 도메인 경계 격리를 실현하는 **Hexagonal Architecture(결제 도메인)**, 인바운드 포트를 전면 차단한 **Zero Trust Edge Network**, 그리고 무중단 운영의 정수인 **Kubernetes**를 하나의 생태계로 완벽하게 통합하여 안정성과 유연성을 동시에 확보합니다.
-
----
+Infra Master Lab은 MSA 인프라를 "실행 가능한 운영 표준"으로 정리합니다. 로컬 Docker Compose에서 시작해 IaC, Edge Proxy, Gateway, Kubernetes 운영 청사진까지 확장 가능한 구조를 제공합니다.
 
 ## 🏗️ Architecture — 어떻게 설계했는가
 
-이 도식은 외부 트래픽이 엣지 보안망을 뚫고 들어와 순수 결제 도메인 로직에 안전하게 닿는 전체 흐름을 보여줍니다.
-
 ```mermaid
 graph TB
-    subgraph Client ["🌐 External Traffic"]
+    subgraph Client ["External Traffic"]
         User["End User / App"]
     end
 
-    subgraph EdgeProxy ["🛡️ Zero Trust Edge Proxy (infra/edge-proxy)"]
-        CF["Cloudflare Edge (WAF)"]
-        Tunnel["Cloudflared (Outbound Tunnel)"]
+    subgraph EdgeProxy ["Zero Trust Edge Proxy"]
+        CF["Cloudflare Edge / WAF"]
+        Tunnel["Cloudflared Outbound Tunnel"]
         Nginx["Nginx Reverse Proxy"]
-        
-        CF -->|Ingress| Tunnel --> Nginx
+        CF --> Tunnel --> Nginx
     end
 
-    subgraph ServiceMesh ["🏗️ Microservice Ecosystem"]
-        Gateway["Spring Cloud Gateway<br/>(Routing / Security)"]
-        
-        subgraph BusinessService ["Payment Domain (Hexagonal)"]
+    subgraph ServiceMesh ["Microservice Ecosystem"]
+        Gateway["Spring Cloud Gateway"]
+        Config["Config Server"]
+
+        subgraph BusinessService ["Payment Domain"]
             InPort["ProcessPaymentUseCase"]
-            Domain["Payment (Pure POJO)"]
+            Domain["Payment Domain Model"]
             OutPort["PaymentGatewayPort"]
-            
             InPort --> Domain --> OutPort
         end
-        
-        Config["Config Server"]
     end
 
-    subgraph Outbound ["🗄️ External Adapters"]
-        PG["Toss Payments / Stripe (Adapter)"]
+    subgraph ExternalAdapter ["External Adapters"]
+        PG["Toss / Stripe Adapter"]
     end
 
-    %% 연결 흐름 정의
-    User -->|HTTPS| CF
+    User -->|"HTTPS"| CF
     Nginx --> Gateway
     Gateway --> InPort
-    OutPort -.->|implements| PG
-    Gateway -.->|binds| Config
-
-    %% 스타일링
-    style BusinessService fill:#F0F9FF,stroke:#0369A1,stroke-width:2px
-    style EdgeProxy fill:#FFF7ED,stroke:#C2410C,stroke-width:2px
+    OutPort -.-> PG
+    Gateway -.-> Config
 ```
 
----
+트래픽은 Cloudflare Edge와 outbound tunnel을 거쳐 내부 reverse proxy와 gateway에 도달합니다. 비즈니스 도메인은 외부 결제사, DB, 웹 프레임워크에 직접 의존하지 않고 port-adapter 경계로 격리됩니다.
 
 ## 📂 Project Structure
 
 ```text
 infra-master-lab/
-├── business-service/           # 🏢 헥사고날 아키텍처 기반 비즈니스 도메인 (Payment)
-│   ├── build.gradle            # Spring Boot 4.0.6, Java 21
-│   ├── Dockerfile
-│   └── src/
-│       ├── main/java/com/hooney/lab/business/payment/
-│       │   ├── application/    # UseCase (InPort) & Service
-│       │   ├── domain/         # 순수 POJO Domain
-│       │   └── framework/      # Adapter (OutPort, Web, DB)
-│       └── test/               # 아키텍처 및 도메인 격리 검증 단위 테스트
-├── terraform/                  # 🏗️ Terraform IaC — Day 0 인프라 프로비저닝
-│   ├── environments/
-│   │   ├── local/              # 🐳 Docker Provider 기반 로컬 Lab (무료)
-│   │   └── aws-reference/      # ☁️ AWS 프로덕션 레퍼런스 (참고용)
-│   └── modules/                # 📦 재사용 가능한 Terraform 모듈
-│       ├── network/            # Docker 브릿지 네트워크 모듈
-│       └── docker-service/     # 범용 컨테이너 서비스 모듈
-├── ansible/                    # 🔧 Ansible IaC — Day 1+ 구성 관리
-│   ├── roles/common/           # OS 공통 설정 (패키지, 방화벽, NTP)
-│   ├── roles/docker/           # Docker/Docker Compose 설치
-│   └── site.yml                # 메인 플레이북
-├── infra/
-│   ├── edge-proxy/             # 🛡️ Zero Trust Nginx & Cloudflared 설정
-│   └── service-mesh/           # 🕸️ Spring Cloud Gateway & Config Server
-├── docs/                       # 📚 ADR(Architecture Decision Records) 문서
-└── docker-compose.yml          # 인프라 전체 스택 원클릭 실행 (Scale-out 포함)
+├── business-service/                          # 🏢 헥사고날 결제 도메인 서비스
+│   ├── build.gradle                           # 🧰 Java 21 / Spring Boot 빌드 설정
+│   ├── Dockerfile                             # 🐳 비즈니스 서비스 컨테이너 빌드
+│   └── src/main/java/com/hooney/lab/business/payment/
+│       ├── application/                       # 🚀 UseCase, InPort, Application Service
+│       ├── domain/                            # 🧩 프레임워크 독립 순수 도메인 모델
+│       └── framework/                         # 🔌 Web, DB, 외부 결제 Adapter
+├── terraform/                                 # 🏗️ Day 0 인프라 프로비저닝
+│   ├── environments/                          # 🌐 환경별 Terraform entrypoint
+│   │   ├── local/                             # 🐳 Docker Provider 기반 로컬 Lab
+│   │   └── aws-reference/                     # ☁️ AWS 운영 참조 구성
+│   └── modules/                               # 📦 재사용 가능한 IaC 모듈
+│       ├── network/                           # 🌐 네트워크 모듈
+│       └── docker-service/                    # 🐳 컨테이너 서비스 모듈
+├── ansible/                                   # 🔧 Day 1+ 서버 구성 관리
+│   ├── roles/common/                          # 🛡️ OS 공통 보안/패키지/NTP 설정
+│   ├── roles/docker/                          # 🐳 Docker 설치 및 daemon 구성
+│   └── site.yml                               # 🚀 메인 운영 플레이북
+├── infra/                                     # 🏗️ Edge 및 Service Mesh 구성
+│   ├── edge-proxy/                            # 🛡️ Cloudflare Tunnel + Nginx Zero Trust Edge
+│   └── service-mesh/                          # 🌐 Gateway, Config Server, 라우팅 계층
+├── docs/                                      # 📚 ADR, 운영 가이드, 트러블슈팅
+└── docker-compose.yml                         # 🐳 로컬 MSA 통합 실행 환경
 ```
 
----
+## 🎯 Key Features & Evidence — 무엇을 증명하는가
 
-## 🎯 Key Features & Evidence (핵심 기능 및 증명)
+### 1. Hexagonal Payment Domain
 
-### ✅ 증거 1: Hexagonal Isolation (결제 도메인 경계 격리)
-기존 3-Layered 구조의 한계를 벗어나, 외부 기술(Toss, Stripe)이 바뀌어도 도메인은 단 한 줄도 흔들리지 않습니다.
-- **[ADR-001: Hexagonal Architecture 채택 결정문](./docs/decisions/ADR-001-hexagonal-architecture.md)**
-- 순수 자바 객체만으로 0.01초 만에 비즈니스 로직을 검증하는 [단위 테스트 코드](./business-service/src/test/java/com/hooney/lab/business/payment/application/service/PaymentServiceTest.java) 구현 완료.
+| Feature | Description |
+| :--- | :--- |
+| **Domain Isolation** | 결제 도메인을 외부 결제사, DB, 웹 프레임워크로부터 분리 |
+| **Inbound Port** | 비즈니스 유스케이스를 명시적 인터페이스로 노출 |
+| **Outbound Port** | Toss, Stripe 등 외부 결제사를 adapter로 교체 가능 |
 
-### ✅ 증거 2: Zero Trust Network (Cloudflare Tunnel)
-서버의 인바운드 포트를 모두 차단(`ports: "80:80"` 제거)하여 포트 스캐닝 및 직접적인 DDoS 공격을 원천 차단했습니다.
-- **[ADR-002: Cloudflare 기반 Zero Trust 채택 결정문](./docs/decisions/ADR-002-edge-security-cloudflare.md)**
-- Cloudflare IP 복원 및 보안 헤더가 주입된 [엔터프라이즈 Nginx 설정](./infra/edge-proxy/nginx.conf).
+**Evidence**
 
-### ✅ 증거 3: Pythonic Infrastructure (IaC) & K8s
-사람이 손으로 직접 타이핑하는 서버 설정은 지양합니다. Ansible과 K8s 매니페스트를 통한 `Rolling Update`로 무중단 배포 시스템을 구축했습니다.
+- [ADR-001: Hexagonal Architecture](./docs/decisions/ADR-001-hexagonal-architecture.md)
+- 순수 Java 객체 기반 단위 테스트로 결제 승인/거절 상태 전이를 빠르게 검증합니다.
 
-### ✅ 증거 4: IaC 이원화 — Terraform (Day 0) + Ansible (Day 1+)
-인프라 자동화의 두 축을 완벽하게 분리하여 산업 표준 IaC 파이프라인을 구축했습니다.
-- **[ADR-003: Terraform Docker Provider 도입 결정문](./docs/decisions/ADR-003-terraform-docker-provider.md)**
-- **Terraform**: Docker Provider로 MSA 컨테이너/네트워크를 선언형으로 프로비저닝 → State File로 드리프트 감지
-- **Ansible**: 프로비저닝된 인프라 위에 OS 설정, 패키지 설치, 보안 구성을 절차적으로 적용
-- 📖 **[Terraform 사용 가이드](./terraform/README.md)** — Quick Start, 모듈 구조, Ansible 연동 워크플로우
+### 2. Zero Trust Edge Network
 
----
+| Risk | Strategy | Evidence |
+| :--- | :--- | :--- |
+| 인바운드 포트 직접 노출 | Cloudflare Tunnel 기반 outbound 연결 | Edge proxy config |
+| 원본 IP/보안 헤더 손실 | Nginx에서 IP 복원과 보안 헤더 주입 | `nginx.conf` |
+| 직접 DDoS와 스캐닝 | Edge 계층에서 WAF와 터널로 차단 | ADR 문서 |
 
-## ⚡ Quick Start & Traffic Scenarios
+**Evidence**
 
-백문이 불여일견입니다. **IntelliJ 또는 VSCode REST Client**에서 즉시 실행 가능한 시나리오 스크립트를 제공합니다.
+- [ADR-002: Cloudflare 기반 Zero Trust](./docs/decisions/ADR-002-edge-security-cloudflare.md)
+- 인바운드 포트를 직접 열지 않는 구조로 외부 노출면을 줄입니다.
 
-- 📖 **[Zero Trust 인그레스 및 헥사고날 결제 라우팅 시나리오 읽어보기](./docs/msa-scenarios.md)**
-- 🚀 **[실행 가능한 HTTP 스크립트 열기 (`scenarios.http`)](./examples/scenarios.http)** 
+### 3. Terraform + Ansible IaC Pipeline
 
-### 로컬 통합 검증 (Docker Compose)
-Kubernetes 배포 전, 로컬에서 전체 MSA 생태계의 정합성을 원클릭으로 검증합니다.
+| Phase | Tool | Responsibility |
+| :--- | :--- | :--- |
+| **Day 0** | Terraform | 네트워크, 컨테이너, 인프라 리소스 선언형 프로비저닝 |
+| **Day 1+** | Ansible | OS 설정, 패키지 설치, 보안 설정, 운영 구성 관리 |
+| **Drift Control** | Terraform State | 선언 상태와 실제 상태 차이 감지 |
+
+**Evidence**
+
+- [ADR-003: Terraform Docker Provider](./docs/decisions/ADR-003-terraform-docker-provider.md)
+- [Terraform 사용 가이드](./terraform/README.md)
+- Ansible role 구조로 반복 가능한 서버 구성 기준을 제공합니다.
+
+### 4. Kubernetes Operations Blueprint
+
+| Feature | Description |
+| :--- | :--- |
+| **Rolling Update** | 서비스 중단을 줄이는 배포 전략 |
+| **Health Check** | readiness/liveness 기반 장애 감지 |
+| **Gateway Routing** | 서비스 라우팅과 보안 정책의 중앙화 |
+
+**Evidence**
+
+- Kubernetes manifest와 Gateway 테스트를 통해 로컬 검증에서 운영 배포 흐름으로 확장할 수 있는 기준을 제공합니다.
+
+## 🚀 Quick Start — 어떻게 실행하는가
+
+### 로컬 통합 검증
+
 ```bash
-# 엣지 프록시 및 백엔드 서비스 백그라운드 구동
+git clone https://github.com/hooneyg/infra-master-lab.git
+cd infra-master-lab
+
 docker-compose up -d
 ```
 
----
+### Traffic Scenario
+
+- [Zero Trust 인그레스 및 헥사고날 결제 라우팅 시나리오](./docs/msa-scenarios.md)
+- [실행 가능한 HTTP 스크립트](./examples/scenarios.http)
 
 ## 🧪 Tests — 어떻게 검증했는가
 
 ```bash
 ./gradlew test
 ```
-- **Domain Layer (Hexagonal)**: 외부 DB나 무거운 스프링 컨텍스트 로딩 없이, 순수 결제 도메인의 승인/거절 상태 전이 완벽 검증.
-- **Gateway Layer**: `WebTestClient`를 활용한 `/api/payment/**` 라우팅 규칙 및 보안 헤더(`X-Frame-Options` 등) 주입 검증.
-- **Config Layer**: 중앙 집중형 설정값의 암복호화 및 프로파일 분리 검증.
 
----
+| Layer | Test Target | What It Proves |
+| :--- | :--- | :--- |
+| Domain | Payment state transition | 외부 기술 없이 도메인 규칙 검증 |
+| Gateway | Route and header policy | 라우팅 규칙과 보안 헤더 주입 |
+| Config | Centralized configuration | 환경별 설정 분리와 암복호화 |
+| IaC | Terraform/Ansible structure | 반복 가능한 운영 환경 구성 |
 
 ## 🧭 Roadmap
 
@@ -170,38 +196,32 @@ docker-compose up -d
 - [ ] GitOps 배포 흐름
 - [ ] Kubernetes health check와 rollout 검증 강화
 
----
-
 ## 🔗 Related Labs
 
 | Related Lab | 연결 이유 |
-| --- | --- |
-| `security-auth-core` | API 또는 연결 요청의 인증/인가 기준 |
-| `database-master-lab` | 상태 저장, 조회, 성능 최적화 기준 |
-| `event-streaming-lab` | 비동기 이벤트 처리와 실패 복구 기준 |
+| :--- | :--- |
+| `security-auth-core` | API와 내부 호출의 인증/인가 기준 |
+| `database-master-lab` | 상태 저장과 성능 최적화 기준 |
+| `event-streaming-lab` | 비동기 이벤트와 장애 복구 기준 |
 | `realtime-comm-lab` | 실시간 연결과 메시지 전달 기준 |
-| `ai-agent-brain-lab` | LAB 문서 기반 AI 질의/자동화 확장 기준 |
-
----
+| `ai-agent-brain-lab` | 인프라 문서 기반 AI 운영 자동화 기준 |
 
 ## 📚 Documentation
 
-- [📘 Tech Wiki: Architecture Philosophy](./TECH_WIKI.md)
-- [🏗️ Terraform IaC Guide](./terraform/README.md) — Day 0 인프라 프로비저닝
-- [🛡️ Security Hardening Guide (Ansible)](./ansible/roles/common/tasks/main.yml) — Day 1+ 구성 관리
-- [☸️ Orchestration Blueprint (K8S)](./k8s-manifests/business-service-deployment.yml)
-- [🛠️ Troubleshooting Guide](./docs/troubleshooting.md) - Cloudflare Tunnel 이슈 및 K8S 디버깅 기록
-
----
+- [Tech Wiki: Architecture Philosophy](./TECH_WIKI.md)
+- [Terraform IaC Guide](./terraform/README.md)
+- [Security Hardening Guide](./ansible/roles/common/tasks/main.yml)
+- [Orchestration Blueprint](./k8s-manifests/business-service-deployment.yml)
+- [Troubleshooting Guide](./docs/troubleshooting.md)
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](./LICENSE).
 
 ---
 
 <div align="center">
-<b>Built with ❤️ by <a href="https://github.com/hooneyg">Hooney</a> — AI FullStack Developer & Enterprise Solution Architect</b>
+<b>Built by <a href="https://github.com/hooneyg">Hooney</a> — AI FullStack Developer & Enterprise Solution Architect</b>
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=FFD700&height=100&section=footer" />
 </div>
