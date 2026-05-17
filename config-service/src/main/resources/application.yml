@@ -3,7 +3,8 @@
 # ║                                                                  ║
 # ║  [주요 설정]                                                     ║
 # ║  1. 포트: 8888                                                   ║
-# ║  2. 프로필: native (로컬 파일 시스템 기반)                        ║
+# ║  2. 프로필: native (로컬 파일 시스템 기반 설정 제공)              ║
+# ║  3. Actuator 헬스체크 활성화                                     ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 server:
@@ -21,3 +22,9 @@ spring:
       server:
         native:
           search-locations: classpath:/config
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
