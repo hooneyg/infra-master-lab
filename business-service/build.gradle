@@ -20,6 +20,9 @@ dependencies {
 
     // Actuator (헬스체크용)
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Swagger UI / OpenAPI 3.0 시각화
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 }
 
 bootJar { enabled = true }
