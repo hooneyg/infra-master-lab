@@ -9,13 +9,17 @@
 dependencies {
     // Web Adapter용
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    
-    // Persistence Adapter용
+
+    // Persistence Adapter용 (JPA + DB 드라이버)
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
-    
+
     // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Actuator (헬스체크용)
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 bootJar { enabled = true }
